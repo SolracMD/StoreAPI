@@ -19,3 +19,30 @@ const create = (req, res) => {
       res.send(err);
     });
 };
+const Login = (req, res) => {
+    const { username, password } = req.body;
+    users.findOne({ username })
+      .exec()
+      .then((user) => {
+        if (!user) return Promise.reject(({ statusCode: 404, message: 'username not found' }));
+        const ValidatePasswordPromise = user.checkPassword((password));
+        return Promise.all([user, ValidatePasswordPromise]);
+      })
+      .then(([User, isValid]) => {
+        if (isValid === false) return Promise.reject(({ statusCode: 404, message: 'user or password is incorrect' }));
+        const token = JWT.sign({
+          User,
+          iat: new Date().getTime(),
+          expiresIn: '300s',
+        }, JWT_SECRET);
+        res.status(201).json({ token });
+      })
+      .catch(((err) => {
+        res.status(400).send({ error: err });
+      }));
+  };
+  
+  module.exports = {
+    create,
+    Login,
+  };
