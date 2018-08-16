@@ -59,10 +59,22 @@ const Add = (req, res) => {
         res.send(err);
       });
   };
+  const DeleteProduct = (req, res) => {
+    const { id } = req.params;
+  
+    products.deleteOne({ _id: id }).exec()
+      .then((deletedProduct) => {
+        res.status(202).send(deletedProduct);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
+  };
 
   module.exports = {
       Add,
       ChangePrice,
       BuyProduct,
+      DeleteProduct,
 
   }
