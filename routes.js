@@ -3,21 +3,20 @@ const UserController = require('./controllers/users');
 const middleware = require('./middleware/auth');
 
 module.exports = (app) => {
-  app.use(middleware.authorization);
 
   app.get('/', (req, res) => {
     res.send('hello world');
   });
 
-  app.post('/api/Products', ProductController.Add);
+  app.post('/api/Products',middleware.authorization, middleware.accessLevel('1,2'), ProductController.Add);
 
-  app.patch('/api/Products/:id', middleware.accessLevel('0,1,2'), ProductController.ChangePrice);
+  app.patch('/api/Products/:id', middleware.authorization, middleware.accessLevel('0,1,2'), ProductController.ChangePrice);
 
-  app.post('/api/Products/:id', middleware.accessLevel('0,1,2'), ProductController.BuyProduct);
+  app.post('/api/Products/:id', middleware.authorization, middleware.accessLevel('0,1,2'), ProductController.BuyProduct);
 
-  app.delete('/api/Products/:id', middleware.accessLevel('1,2'), ProductController.DeleteProduct);
+  app.delete('/api/Products/:id', middleware.authorization, middleware.accessLevel('1,2'), ProductController.DeleteProduct);
 
-  app.put('/api/Products/:id', middleware.accessLevel('0,1,2'), ProductController.LikeProduct);
+  app.put('/api/Products/:id', middleware.authorization, middleware.accessLevel('0,1,2'), ProductController.LikeProduct);
 
   app.post('/api/users', UserController.create);
 

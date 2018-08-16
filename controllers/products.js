@@ -3,8 +3,12 @@ const ChangePriceLog = require('../models/changePriceLog');
 const SaleLog = require('../models/saleLog');
 const LikeTracker = require('../models/likeTracker');
 
+const limit = 10;
+
 const Add = (req, res) => {
     const { name, stock, price } = req.body;
+    if((typeof stock === 'number' && (stock % 1) === 0) || stock <= 0) return res.status(400).send("stock need to a positive integer");
+    if((typeof price !== 'number' || price <= 0)) return res.status(400).send("price need to a positive number");
   
     products.findOne({ name }).exec()
       .then((ProductFound) => {
