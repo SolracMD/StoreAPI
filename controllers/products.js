@@ -7,8 +7,8 @@ const limit = 10;
 
 const Add = (req, res) => {
     const { name, stock, price } = req.body;
-    if((typeof stock === 'number' && (stock % 1) === 0) || stock <= 0) return res.status(400).send("stock need to a positive integer");
-    if((typeof price !== 'number' || price <= 0)) return res.status(400).send("price need to a positive number");
+    if((isNaN(stock) && (stock % 1) !== 0) || stock <= 0) return res.status(400).send("stock need to a positive integer");
+    if((isNaN(price) || price <= 0)) return res.status(400).send("price need to a positive number");
   
     products.findOne({ name }).exec()
       .then((ProductFound) => {
@@ -29,8 +29,11 @@ const Add = (req, res) => {
     const { price } = req.body;
     const { User } = req.user;
     //  check for valid prodcutID, update price and add the new price to the log
+    if((isNaN(price) || price <= 0)) return res.status(400).send("price need to a positive number");
+    
     products.findOneAndUpdate({ _id: id }, { price },{new:true}).exec()
       .then((ProductUpdated) => {
+        if(!ProductUpdated) return Promise.reject({statusCode:404,err:'wrong product id'})
         res.status(200).send(ProductUpdated);
         return ChangePriceLog.create({ userID: User._id, productID: id, price });
       })
