@@ -11,7 +11,8 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 
 ```
-node,express,mongodb
+node,express,mongodb, visit https://nodejs.org/es/,https://expressjs.com/,https://www.mongodb.com/es
+Use robomongo as your gui tool to view documents added(optional). 
 ```
 
 ### Installing
