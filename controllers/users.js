@@ -6,7 +6,7 @@ const { JWT_SECRET } = process.env;
 
 const create = (req, res) => {
   const { username, password, accessLevel } = req.body;
-
+  if(accessLevel >= 1 && req.user == undefined)return res.status(404).send('only admins can add employee or admins');
   users.findOne({ username }).exec()
     .then((UserFound) => {
       if (UserFound) return Promise.reject({ statusCode: 400, error: 'username already in user' });
