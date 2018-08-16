@@ -3,7 +3,7 @@ const ChangePriceLog = require('../models/changePriceLog');
 const SaleLog = require('../models/saleLog');
 const LikeTracker = require('../models/likeTracker');
 
-const limit = 10;
+
 
 const Add = (req, res) => {
     const { name, stock, price } = req.body;
@@ -30,7 +30,7 @@ const Add = (req, res) => {
     const { User } = req.user;
     //  check for valid prodcutID, update price and add the new price to the log
     if((isNaN(price) || price <= 0)) return res.status(400).send("price need to a positive number");
-    
+
     products.findOneAndUpdate({ _id: id }, { price },{new:true}).exec()
       .then((ProductUpdated) => {
         if(!ProductUpdated) return Promise.reject({statusCode:404,err:'wrong product id'})
@@ -100,6 +100,7 @@ const Add = (req, res) => {
     const page = req.query.page;
     const SortCriteria = req.query.sort;
     const search = req.query.search;
+    const limit = req.query.limit;
   
     if (search !== undefined) {
       products.find({ name: search }).exec()
@@ -111,21 +112,21 @@ const Add = (req, res) => {
         });
     } else {
       switch (SortCriteria) {
-        case 'name': AscendingSortName(page, res);
+        case 'name': AscendingSortName(page,limit, res);
   
           break;
   
-        case 'name--': DescendingSortName(page, res);
+        case 'name--': DescendingSortName(page,limit, res);
   
           break;
-        case 'likes': AscendingSortLikes(page, res);
+        case 'likes': AscendingSortLikes(page,limit, res);
   
           break;
-        case 'likes--': DescendingSortLikes(page, res);
+        case 'likes--': DescendingSortLikes(page,limit, res);
   
           break;
   
-        default: AscendingSortName(page, res);
+        default: AscendingSortName(page,limit, res);
   
           break;
       }
@@ -143,8 +144,9 @@ const Add = (req, res) => {
 
   }
 
-  function AscendingSortName(page, res) {
+  function AscendingSortName(page,limit,res) {
     if (page === undefined) page = 1;
+    if (limit === undefined)limit = 5;
     {
       const options = {
         sort: { name: 1 },
@@ -160,7 +162,7 @@ const Add = (req, res) => {
         });
     }
   }
-  function DescendingSortName(page, res) {
+  function DescendingSortName(page,limit,res) {
     if (page === undefined) page = 1;
     {
       const options = {
@@ -177,7 +179,7 @@ const Add = (req, res) => {
         });
     }
   }
-  function AscendingSortLikes(page, res) {
+  function AscendingSortLikes(page,limit,res) {
     if (page === undefined) page = 1;
     {
       const options = {
@@ -194,7 +196,7 @@ const Add = (req, res) => {
         });
     }
   }
-  function DescendingSortLikes(page, res) {
+  function DescendingSortLikes(page,limit,res) {
     if (page === undefined) page = 1;
     {
       const options = {
