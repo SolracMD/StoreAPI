@@ -1,6 +1,7 @@
 const products = require('../models/products');
 const ChangePriceLog = require('../models/changePriceLog');
 const SaleLog = require('../models/saleLog');
+const LikeTracker = require('../models/likeTracker');
 
 const Add = (req, res) => {
     const { name, stock, price } = req.body;
