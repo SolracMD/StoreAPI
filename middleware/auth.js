@@ -29,11 +29,8 @@ const authorization = function authorization(req, res, next) {
 const accessLevel = function accessLevel(level) {
     // check user and the role of the user
     return (req, res, next) => {
-      console.log('test', ...level);
-      console.log(level);
+      if(level.includes('-1')) return next();
       const LevelTest = level.indexOf(req.user.User.accessLevel) > -1;
-      console.log(level.indexOf(req.user.accessLevel));
-      console.log(LevelTest);
       if (req.user && (LevelTest)) { next(); } else {
         res.status(403).send({ message: 'Forbiden' });
       }
