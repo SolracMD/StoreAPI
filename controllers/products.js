@@ -70,11 +70,30 @@ const Add = (req, res) => {
         res.status(400).send(err);
       });
   };
+  const LikeProduct = (req, res) => {
+    const { id } = req.params;
+    const { User } = req.user;
+  
+    LikeTracker.findOne({ userID: User._id, productID: id }).exec()
+      .then((FindLikedProduct) => {
+        if (FindLikedProduct) return Promise.reject({ statusCode: 400, message: 'already Liked product' });
+        return products.findOneAndUpdate({ _id: id }, { $inc: { likes: parseInt(1, 10) } }, { new: true }).exec();
+      })
+      .then((UpdateLike) => {
+        if (UpdateLike == null) return Promise.reject({ statusCode: 404, message: 'wrong productID' });
+        res.send(UpdateLike);
+        return LikeTracker.create({ userID: User._id, productID: id });
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+  };
 
   module.exports = {
       Add,
       ChangePrice,
       BuyProduct,
       DeleteProduct,
+      LikeProduct,
 
   }
