@@ -1,0 +1,190 @@
+PostMan Tests:
+Register a User
+Post:api/users 
+In the body as a Json write username, password and accessLevel
+sample json{
+		"username":"solrac"
+		"password":"password"
+		"accesLevel":"0"
+In this enpoint u cannot create users with acceslevel higher or equal to 1. It will riderect you 
+the register page again. Checks for duplicates
+Postman output:
+{
+    "_id" : ObjectId("5b75f6ae6f4638675decd6ae"),
+    "accessLevel" : 0,
+    "username" : "solrac",
+    "password" : "$2a$05$7kTAeIiERuv7vIktxfy1.ur1S42dJ/xSaOFFPZqo4utPhdUon7USi",
+    "__v" : 0
+}
+Post:api/users/admin
+IN the body as JSON write username,password and accessLevel.This endpoint needs authorization to 
+enter, and the only roles that can access it are 2(admins). Postman output is the
+same as above however you the admin can add any user.
+
+User Login
+Post:api/users/login
+Must provide a valid username and password. If the credetials added are correct it will generate a
+jwt which contains users information. The jwt is added to the header with Bearer keyword before 
+and access to restriced endpoints is allowed.
+
+The endpoints that restricted are
+Add(1,2) only admin,employee can add
+ChangePrice(1,2) only admin, employee can changePrice
+delete(1,2) only admin,employee can Delete
+Buy(0,1,2) must be logged in to buy
+Like(0,1,2) must be logged in to like
+getProdcuts() anyone can sort/search for prodcuts
+
+Add a Product:
+Post:localhost:3000/api/Products
+In the body as a JSON write {name,stock,price}(stock || price need to negative whole numbers)
+sample json {
+		"name":"IceCream"
+		"stock":"5"
+		"price":"2.4"
+}
+
+output in Postman terminal:
+{
+    "_id": "5b75e2b8aa385c56c0ef2656",
+    "name": "IceCream",
+    "stock": 5,
+    "price": 2.4,
+    "likes": 0,
+    "__v": 0
+}
+
+Change Price of a Prodcut:
+Patch:localhost:3000/api/Products/5b75e2b8aa385c56c0ef2656 (id = doc id of product)
+In the body as JSON write newPrice. 
+sample JSON {
+		"price":"4.5"
+}
+output in Postman terminal, will show updated price. Log of pricechanged is also created but not outputed.
+{
+    "_id": "5b75e2b8aa385c56c0ef2656",
+    "name": "IceCream",
+    "stock": 5,
+    "price": 1.4,
+    "likes": 0,
+    "__v": 0
+}
+Buy a Prodcut:
+Post:localhost:3000/api/Products/5b75e2b8aa385c56c0ef2656 (id= doc id of product)
+In the body as JSOn write amount to buy
+sample JSON {
+		"amount":"3"
+}
+output in Postman Terminal, will show the SaleLog created with ProdcutID,userID,date and amount bought
+{
+    "_id": "5b75e50d0d327358047b83c2",
+    "userID": "5b7456d749dd2a599604d79c",
+    "productID": "5b75e2b8aa385c56c0ef2656",
+    "amount": 3,
+    "date": "2018-08-16T20:56:45.353Z",
+    "__v": 0
+}
+Delete a Product:
+Delete:localhost:3000/api/Products/5b749d9044546b1d9cae8c9f
+No need to write anything to the body. Only need to provide a valid prodcutID
+output in postman terminal, shows numbers of record deleted and if it was succesfull
+{
+    "n": 1,
+    "ok": 1
+}
+Like a Product:
+Put:localhost:3000/api/Products/5b75e2b8aa385c56c0ef2656
+No need to write anyhting to the body. Only need to provde a valid productID
+output in postman terminal,shows the updated record with like added to the counter.
+This like is added to the liketracker documents to avoid 1 user liking the same product
+multiple times. if user tries to like product error message will appear.
+{
+    "_id": "5b75e2b8aa385c56c0ef2656",
+    "name": "IceCream",
+    "stock": 2,
+    "price": 1.4,
+    "likes": 1,
+    "__v": 0
+}
+List Products:
+Get:localhost:3000/api/Products
+if no query arguments are given to the endpoint in will by defualt disply Product in ascending order. Also pages will be set to 1 with a limit of 10;
+{
+    "docs": [
+        {
+            "_id": "5b75e2b8aa385c56c0ef2656",
+            "name": "IceCream",
+            "stock": 2,
+            "price": 1.4,
+            "likes": 1,
+            "__v": 0
+        },
+        {
+            "_id": "5b749d6f44546b1d9cae8c9e",
+            "name": "Pepsi",
+            "stock": 5,
+            "price": 2.5,
+            "likes": 0,
+            "__v": 0
+        },
+        {
+            "_id": "5b749da144546b1d9cae8ca0",
+            "name": "Pizza",
+            "stock": 2,
+            "price": 1.75,
+            "likes": 1,
+            "__v": 0
+        }
+    ],
+    "total": 3,
+    "limit": 10,
+    "page": 1,
+    "pages": 1
+}
+if the sort query is given with values(name,name--,likes,likes--) it will sort them by the query parmeter given. The -- after the param states it will sort in descending order. 
+example localhost:3000/api/Products/?sort=likes--:
+{
+    "docs": [
+        {
+            "_id": "5b749da144546b1d9cae8ca0",
+            "name": "Pizza",
+            "stock": 2,
+            "price": 1.75,
+            "likes": 1,
+            "__v": 0
+        },
+        {
+            "_id": "5b75e2b8aa385c56c0ef2656",
+            "name": "IceCream",
+            "stock": 2,
+            "price": 1.4,
+            "likes": 1,
+            "__v": 0
+        },
+        {
+            "_id": "5b749d6f44546b1d9cae8c9e",
+            "name": "Pepsi",
+            "stock": 5,
+            "price": 2.5,
+            "likes": 0,
+            "__v": 0
+        }
+    ],
+    "total": 3,
+    "limit": 10,
+    "page": 1,
+    "pages": 1
+}
+To search for Prodcut by name simply add a name query parameter.
+example: localhost:3000/api/Products/?search=Pizza
+[
+    {
+        "_id": "5b749da144546b1d9cae8ca0",
+        "name": "Pizza",
+        "stock": 2,
+        "price": 1.75,
+        "likes": 1,
+        "__v": 0
+    }
+]
+You can add how many pages and number of resultsy including the a page parameter and limit with the sort or search.
