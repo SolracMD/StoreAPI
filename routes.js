@@ -1,5 +1,5 @@
-const ProductController = require('./controllers/Products');
-const UserController = require('./controllers/Users');
+const ProductController = require('./controllers/products');
+const UserController = require('./controllers/users');
 const middleware = require('./middleware/auth');
 
 module.exports = (app) => {
