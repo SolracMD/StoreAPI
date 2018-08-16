@@ -88,6 +88,42 @@ const Add = (req, res) => {
         res.send(err);
       });
   };
+  const getProducts = (req, res) => {
+    const page = req.query.page;
+    const SortCriteria = req.query.sort;
+    const search = req.query.search;
+  
+    if (search !== undefined) {
+      products.find({ name: search }).exec()
+        .then((SearchedProduct) => {
+          res.status(200).send(SearchedProduct);
+        })
+        .catch((err) => {
+          res.status(400).code(err);
+        });
+    } else {
+      switch (SortCriteria) {
+        case 'name': AscendingSortName(page, res);
+  
+          break;
+  
+        case 'name--': DescendingSortName(page, res);
+  
+          break;
+        case 'likes': AscendingSortLikes(page, res);
+  
+          break;
+        case 'likes--': DescendingSortLikes(page, res);
+  
+          break;
+  
+        default: AscendingSortName(page, res);
+  
+          break;
+      }
+    }
+  };
+
 
   module.exports = {
       Add,
@@ -95,5 +131,76 @@ const Add = (req, res) => {
       BuyProduct,
       DeleteProduct,
       LikeProduct,
+      getProducts,
 
   }
+
+  function AscendingSortName(page, res) {
+    if (page === undefined) page = 1;
+    {
+      const options = {
+        sort: { name: 1 },
+        limit,
+        page,
+      };
+      products.paginate({}, options)
+        .then((AvailableProducts) => {
+          res.send(AvailableProducts);
+        })
+        .catch((err) => {
+          res.send(err);
+        });
+    }
+  }
+  function DescendingSortName(page, res) {
+    if (page === undefined) page = 1;
+    {
+      const options = {
+        sort: { name: -1 },
+        limit,
+        page,
+      };
+      products.paginate({}, options)
+        .then((AvailableProducts) => {
+          res.send(AvailableProducts);
+        })
+        .catch((err) => {
+          res.send(err);
+        });
+    }
+  }
+  function AscendingSortLikes(page, res) {
+    if (page === undefined) page = 1;
+    {
+      const options = {
+        sort: { likes: 'asc' },
+        limit,
+        page: 1,
+      };
+      products.paginate({}, options)
+        .then((AvailableProducts) => {
+          res.send(AvailableProducts);
+        })
+        .catch((err) => {
+          res.send(err);
+        });
+    }
+  }
+  function DescendingSortLikes(page, res) {
+    if (page === undefined) page = 1;
+    {
+      const options = {
+        sort: { likes: -1 },
+        limit,
+        page,
+      };
+      products.paginate({}, options)
+        .then((AvailableProducts) => {
+          res.send(AvailableProducts);
+        })
+        .catch((err) => {
+          res.send(err);
+        });
+    }
+  }
+  
