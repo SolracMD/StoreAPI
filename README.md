@@ -24,5 +24,6 @@ After the depencies have been installed correctly,add a .env file which will con
 .env file has been created you can add your own run script or simply run node server. THis will initialize the express server.
 
 ### Testing
-Use Postman to test all the routes shown in the routes.js file
+Use Postman to test all the routes shown in the routes.js file. View the file postman_test to see the test that where done
+but you can create your own test.
 
