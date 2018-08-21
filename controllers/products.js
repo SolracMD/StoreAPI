@@ -126,16 +126,6 @@ const Add = (req, res) => {
   
           break;
         
-        // case 'test':
-        //   products.find().sort({likes:-1}).limit(10).exec()
-        //   .then(pagination =>{
-        //     res.status(200).send(pagination);
-        //   })
-        //   .catch(err =>{
-        //     res.status(err).send(err);
-        //   })
-        //   break;
-  
         default: AscendingSortName(page,limit, res);
   
           break;
