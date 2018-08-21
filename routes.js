@@ -1,12 +1,9 @@
 const ProductController = require('./controllers/products');
 const UserController = require('./controllers/users');
 const middleware = require('./middleware/auth');
+const reactCtrl = require('./controllers/reactAppTest');
 
 module.exports = (app) => {
-
-  app.get('/', (req, res) => {
-    res.send('hello world');
-  });
 
   app.post('/api/Products',middleware.authorization, middleware.accessLevel('1,2'), ProductController.Add);
 
@@ -25,4 +22,6 @@ module.exports = (app) => {
   app.post('/api/users/login', UserController.Login);
 
   app.get('/api/Products', ProductController.getProducts);
+
+  app.get('/api/test',reactCtrl.test_react);
 };

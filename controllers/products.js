@@ -125,6 +125,16 @@ const Add = (req, res) => {
         case 'likes--': DescendingSortLikes(page,limit, res);
   
           break;
+        
+        // case 'test':
+        //   products.find().sort({likes:-1}).limit(10).exec()
+        //   .then(pagination =>{
+        //     res.status(200).send(pagination);
+        //   })
+        //   .catch(err =>{
+        //     res.status(err).send(err);
+        //   })
+        //   break;
   
         default: AscendingSortName(page,limit, res);
   
@@ -164,6 +174,7 @@ const Add = (req, res) => {
   }
   function DescendingSortName(page,limit,res) {
     if (page === undefined) page = 1;
+    if (limit === undefined)limit = 5;
     {
       const options = {
         sort: { name: -1 },
@@ -172,7 +183,9 @@ const Add = (req, res) => {
       };
       products.paginate({}, options)
         .then((AvailableProducts) => {
+          console.log(options);
           res.send(AvailableProducts);
+          console.log(AvailableProducts);
         })
         .catch((err) => {
           res.send(err);
@@ -181,9 +194,10 @@ const Add = (req, res) => {
   }
   function AscendingSortLikes(page,limit,res) {
     if (page === undefined) page = 1;
+    if (limit === undefined)limit = 5;
     {
       const options = {
-        sort: { likes: 'asc' },
+        sort: { likes: 1 },
         limit,
         page: 1,
       };
@@ -198,6 +212,7 @@ const Add = (req, res) => {
   }
   function DescendingSortLikes(page,limit,res) {
     if (page === undefined) page = 1;
+    if (limit === undefined)limit = 5;
     {
       const options = {
         sort: { likes: -1 },
